@@ -24,3 +24,21 @@ const EARTH_MU = 398600.4418
     @test_throws ArgumentError hohmann_transfer(7000.0, -1.0, EARTH_MU)
     @test_throws ArgumentError hohmann_transfer(7000.0, 8000.0, Inf)
 end
+
+@testset "Transfer from altitudes" begin
+    earth_radius = 6378.0
+    from_altitudes = hohmann_transfer_altitudes(622.0, 35786.0, earth_radius, EARTH_MU)
+    from_radii = hohmann_transfer(7000.0, 42164.0, EARTH_MU)
+
+    @test from_altitudes == from_radii
+    @test hohmann_transfer_altitudes(35786.0, 622.0, earth_radius, EARTH_MU) ==
+          hohmann_transfer(42164.0, 7000.0, EARTH_MU)
+    @test hohmann_transfer_altitudes(0.0, 622.0, earth_radius, EARTH_MU) ==
+          hohmann_transfer(earth_radius, 7000.0, EARTH_MU)
+
+    @test_throws ArgumentError hohmann_transfer_altitudes(-1.0, 622.0, earth_radius, EARTH_MU)
+    @test_throws ArgumentError hohmann_transfer_altitudes(622.0, NaN, earth_radius, EARTH_MU)
+    @test_throws ArgumentError hohmann_transfer_altitudes(622.0, 1000.0, 0.0, EARTH_MU)
+    @test_throws ArgumentError hohmann_transfer_altitudes(622.0, 1000.0, Inf, EARTH_MU)
+    @test_throws ArgumentError hohmann_transfer_altitudes(622.0, 1000.0, earth_radius, -1.0)
+end

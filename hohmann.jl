@@ -28,3 +28,22 @@ function hohmann_transfer(r1::Real, r2::Real, μ::Real)
         transfer_semimajor_axis = a_transfer,
     )
 end
+
+"""
+    hohmann_transfer_altitudes(h1, h2, body_radius, μ)
+
+Calculate a transfer using altitudes above a spherical body's surface.
+Altitudes and body radius are in km; μ is in km³/s². The returned values
+use the same units and sign convention as `hohmann_transfer`.
+"""
+function hohmann_transfer_altitudes(h1::Real, h2::Real, body_radius::Real, μ::Real)
+    for (name, value) in (("h1", h1), ("h2", h2))
+        isfinite(value) && value >= 0 || throw(ArgumentError("$name must be finite and nonnegative"))
+    end
+    isfinite(body_radius) && body_radius > 0 ||
+        throw(ArgumentError("body_radius must be finite and positive"))
+
+    r1 = float(body_radius) + float(h1)
+    r2 = float(body_radius) + float(h2)
+    return hohmann_transfer(r1, r2, μ)
+end

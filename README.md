@@ -14,6 +14,16 @@ transfer = hohmann_transfer(7000.0, 42164.0, earth_mu)
 println(transfer)
 ```
 
+If the orbits are given as altitudes above a spherical body, pass the body radius as well:
+
+```julia
+earth_radius = 6378.0
+transfer = hohmann_transfer_altitudes(622.0, 35786.0, earth_radius, earth_mu)
+println(transfer)
+```
+
+Altitudes and the body radius are in kilometers. The model does not check for the atmosphere or other physical obstacles.
+
 Run the tests from this folder with:
 
 ```sh
